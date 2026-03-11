@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixMob DJ Keyboard</title>
+    <link rel="stylesheet" href="css/dj-style.css" />
+  </head>
+  <body>
+    <div id="notification" class="notification"></div>
+
+    <div class="header">
+      <h1>🎹 PixMob DJ Keyboard</h1>
+      <div class="header-controls">
+        <button type="button" id="connectBtn" class="btn btn-connect">
+          Connect to board
+        </button>
+        <button type="button" id="helpBtn" class="btn btn-help">?</button>
+        <a href="index.html" class="btn btn-secondary">Original UI</a>
+      </div>
+    </div>
+
+    <div class="mode-selector">
+      <label>
+        <input type="radio" name="mode" value="trigger" checked />
+        <span>Trigger Mode</span>
+      </label>
+      <label>
+        <input type="radio" name="mode" value="map" />
+        <span>Mapping Mode</span>
+      </label>
+      <button id="clearMappingsBtn" class="btn btn-small">
+        Clear All Mappings
+      </button>
+      <button id="exportMappingsBtn" class="btn btn-small">
+        Export Mappings
+      </button>
+      <button id="importMappingsBtn" class="btn btn-small">
+        Import Mappings
+      </button>
+    </div>
+
+    <div id="mappingPanel" class="mapping-panel" style="display: none">
+      <h3>Map key: <span id="selectedKey"></span></h3>
+      <div class="mapping-form">
+        <label for="effectSelect">Effect:</label>
+        <select id="effectSelect"></select>
+
+        <label for="tailSelect">Tail Code (optional):</label>
+        <select id="tailSelect">
+          <option value="">None</option>
+          <option value="FADE_1">FADE_1</option>
+          <option value="FADE_2">FADE_2</option>
+          <option value="FADE_3">FADE_3</option>
+          <option value="FADE_4">FADE_4</option>
+          <option value="FADE_5">FADE_5</option>
+          <option value="FADE_6">FADE_6</option>
+          <option value="SHARP_PROBABILISTIC_1">SHARP_PROBABILISTIC_1</option>
+          <option value="SHARP_PROBABILISTIC_2">SHARP_PROBABILISTIC_2</option>
+          <option value="SHARP_PROBABILISTIC_3">SHARP_PROBABILISTIC_3</option>
+          <option value="SHARP_PROBABILISTIC_4">SHARP_PROBABILISTIC_4</option>
+          <option value="FADE_PROBABILISTIC_1">FADE_PROBABILISTIC_1</option>
+          <option value="FADE_PROBABILISTIC_2">FADE_PROBABILISTIC_2</option>
+          <option value="FADE_PROBABILISTIC_3">FADE_PROBABILISTIC_3</option>
+          <option value="FADE_PROBABILISTIC_4">FADE_PROBABILISTIC_4</option>
+        </select>
+
+        <div class="button-group">
+          <button id="saveMapping" class="btn">Save Mapping</button>
+          <button id="cancelMapping" class="btn btn-secondary">Cancel</button>
+          <button id="clearKeyMapping" class="btn btn-danger">
+            Clear This Key
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="keyboard-container">
+      <div class="keyboard-row">
+        <div class="key" data-key="1">1<span class="key-label"></span></div>
+        <div class="key" data-key="2">2<span class="key-label"></span></div>
+        <div class="key" data-key="3">3<span class="key-label"></span></div>
+        <div class="key" data-key="4">4<span class="key-label"></span></div>
+        <div class="key" data-key="5">5<span class="key-label"></span></div>
+        <div class="key" data-key="6">6<span class="key-label"></span></div>
+        <div class="key" data-key="7">7<span class="key-label"></span></div>
+        <div class="key" data-key="8">8<span class="key-label"></span></div>
+        <div class="key" data-key="9">9<span class="key-label"></span></div>
+        <div class="key" data-key="0">0<span class="key-label"></span></div>
+      </div>
+
+      <div class="keyboard-row">
+        <div class="key" data-key="q">Q<span class="key-label"></span></div>
+        <div class="key" data-key="w">W<span class="key-label"></span></div>
+        <div class="key" data-key="e">E<span class="key-label"></span></div>
+        <div class="key" data-key="r">R<span class="key-label"></span></div>
+        <div class="key" data-key="t">T<span class="key-label"></span></div>
+        <div class="key" data-key="y">Y<span class="key-label"></span></div>
+        <div class="key" data-key="u">U<span class="key-label"></span></div>
+        <div class="key" data-key="i">I<span class="key-label"></span></div>
+        <div class="key" data-key="o">O<span class="key-label"></span></div>
+        <div class="key" data-key="p">P<span class="key-label"></span></div>
+      </div>
+
+      <div class="keyboard-row">
+        <div class="key" data-key="a">A<span class="key-label"></span></div>
+        <div class="key" data-key="s">S<span class="key-label"></span></div>
+        <div class="key" data-key="d">D<span class="key-label"></span></div>
+        <div class="key" data-key="f">F<span class="key-label"></span></div>
+        <div class="key" data-key="g">G<span class="key-label"></span></div>
+        <div class="key" data-key="h">H<span class="key-label"></span></div>
+        <div class="key" data-key="j">J<span class="key-label"></span></div>
+        <div class="key" data-key="k">K<span class="key-label"></span></div>
+        <div class="key" data-key="l">L<span class="key-label"></span></div>
+      </div>
+
+      <div class="keyboard-row">
+        <div class="key" data-key="z">Z<span class="key-label"></span></div>
+        <div class="key" data-key="x">X<span class="key-label"></span></div>
+        <div class="key" data-key="c">C<span class="key-label"></span></div>
+        <div class="key" data-key="v">V<span class="key-label"></span></div>
+        <div class="key" data-key="b">B<span class="key-label"></span></div>
+        <div class="key" data-key="n">N<span class="key-label"></span></div>
+        <div class="key" data-key="m">M<span class="key-label"></span></div>
+      </div>
+    </div>
+
+    <div id="helpModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>PixMob DJ Keyboard</h2>
+        <h3>How to use:</h3>
+        <ol>
+          <li>
+            <strong>Connect your board:</strong> Click "Connect to board" and
+            select your Arduino/ESP32.
+          </li>
+          <li>
+            <strong>Map keys:</strong> Switch to "Mapping Mode", click a key on
+            the keyboard, select an effect, and save.
+          </li>
+          <li>
+            <strong>Trigger effects:</strong> Switch to "Trigger Mode" and press
+            keys (keyboard or click) to send IR commands!
+          </li>
+          <li>
+            <strong>Save/Load:</strong> Your mappings are automatically saved.
+            Use Export/Import to backup or share.
+          </li>
+        </ol>
+        <h3>Tips:</h3>
+        <ul>
+          <li>Tail codes add fade effects to base colors</li>
+          <li>Physical keyboard and on-screen clicks both work</li>
+          <li>Mappings persist between sessions</li>
+          <li>Use number keys for quick color access</li>
+        </ul>
+      </div>
+    </div>
+
+    <input
+      type="file"
+      id="importFileInput"
+      style="display: none"
+      accept=".json"
+    />
+
+    <script src="js/effects_definitions.js"></script>
+    <script src="js/dj.js"></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "q": {
+    "effect": "RED",
+    "tail": "FADE_2"
+  },
+  "w": {
+    "effect": "GREEN",
+    "tail": "FADE_2"
+  },
+  "e": {
+    "effect": "BLUE",
+    "tail": "FADE_2"
+  },
+  "r": {
+    "effect": "YELLOW",
+    "tail": "FADE_2"
+  },
+  "t": {
+    "effect": "ORANGE",
+    "tail": "FADE_2"
+  },
+  "y": {
+    "effect": "PINK",
+    "tail": "FADE_2"
+  },
+  "u": {
+    "effect": "MAGENTA",
+    "tail": "FADE_2"
+  },
+  "i": {
+    "effect": "TURQUOISE",
+    "tail": "FADE_2"
+  },
+  "o": {
+    "effect": "WHITISH",
+    "tail": "FADE_2"
+  },
+  "a": {
+    "effect": "RED",
+    "tail": null
+  },
+  "s": {
+    "effect": "GREEN",
+    "tail": null
+  },
+  "d": {
+    "effect": "BLUE",
+    "tail": null
+  },
+  "f": {
+    "effect": "YELLOW",
+    "tail": null
+  },
+  "1": {
+    "effect": "FAST_WHITE",
+    "tail": null
+  },
+  "2": {
+    "effect": "SLOW_WHITE",
+    "tail": null
+  },
+  "3": {
+    "effect": "SLOW_TURQUOISE",
+    "tail": null
+  }
+}

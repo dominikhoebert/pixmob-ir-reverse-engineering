@@ -2,6 +2,16 @@
 
 A web-based interface for controlling PixMob IR wristbands using an Arduino/ESP32 with an IR transmitter.
 
+## Features
+
+- **Original UI** (`index.html`) - Traditional dropdown-based interface for selecting and sending effects
+- **🎹 DJ Keyboard Mode** (`dj.html`) - NEW! Map IR commands to keyboard keys for live "DJ-ing" of lights
+  - Visual keyboard interface with click or physical key press support
+  - Customizable key mappings with localStorage persistence
+  - Export/import mappings for backup or sharing
+  - Color-coded keys based on mapped effects
+  - Two modes: Trigger (play effects) and Mapping (assign effects to keys)
+
 ## Quick Start
 
 ### Option 1: Python HTTP Server (Recommended for local testing)
@@ -44,11 +54,47 @@ Wire the IR transmitter to your board according to the pin configuration in the 
 
 ### 3. Use the Web Interface
 
+#### Original Interface (index.html)
+
 1. Click "Connect to board" button
 2. Select your Arduino's serial port from the browser dialog
 3. Choose a main effect from the dropdown
 4. Optionally select a tail code (for fade effects, probabilistic effects, etc.)
 5. Click "Send" to transmit the IR signal
+
+#### DJ Keyboard Interface (dj.html)
+
+The DJ Keyboard mode provides a more interactive way to control PixMob lights in real-time:
+
+**Setup:**
+
+1. Click "Connect to board" and select your Arduino
+2. Switch to "Mapping Mode"
+3. Click a key on the virtual keyboard
+4. Select an effect and optional tail code
+5. Click "Save Mapping"
+6. Repeat for as many keys as you want to map
+
+**Usage:**
+
+1. Switch to "Trigger Mode"
+2. Press keys on your physical keyboard OR click keys on screen
+3. Watch your lights respond instantly!
+
+**Features:**
+
+- **37 mappable keys** (numbers 1-0 and letters Q-M)
+- **Visual feedback** - Keys are color-coded by effect type
+- **Persistent storage** - Mappings saved automatically in localStorage
+- **Export/Import** - Save mapping configurations as JSON files
+- **Both input methods** - Physical keyboard and on-screen clicks work simultaneously
+
+**Tips:**
+
+- Map your favorite colors to number keys for quick access
+- Use letter keys for more complex effects or special effects
+- Export your mappings to share with friends or backup your configuration
+- Keys show abbreviated effect names for easy reference
 
 ## How It Works
 
@@ -73,12 +119,15 @@ The web UI is a single-page application that communicates with an Arduino via th
 
 ```
 www/
-├── index.html                    # Main HTML structure
+├── index.html                    # Original form-based interface
+├── dj.html                       # NEW: DJ Keyboard interface
 ├── css/
-│   └── style.css                 # Styling
+│   ├── style.css                 # Styling for original interface
+│   └── dj-style.css              # NEW: Styling for DJ keyboard
 ├── js/
-│   ├── script.js                 # Main application logic & Web Serial communication
-│   └── effects_definitions.js    # All effect codes (base colors, tails, special effects)
+│   ├── script.js                 # Original UI logic & Web Serial communication
+│   ├── dj.js                     # NEW: DJ keyboard logic & key mapping
+│   └── effects_definitions.js    # All effect codes (shared by both UIs)
 └── docs/
     └── arduino_sender/           # Arduino sketches for reference
 ```
