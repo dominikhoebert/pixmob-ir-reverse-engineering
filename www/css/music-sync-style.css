@@ -496,6 +496,99 @@ body {
   }
 }
 
+/* Microphone Input Section */
+.mic-input-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 152, 0, 0.3);
+}
+
+.mic-input-section h3 {
+  color: #ff9800;
+  margin-bottom: 12px;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mic-input-section .btn {
+  margin-bottom: 10px;
+}
+
+.mic-status-text {
+  font-size: 0.9em;
+  color: #b0b0b0;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.mic-status-text.mic-on {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.energy-visualization {
+  margin: 15px 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 152, 0, 0.2);
+}
+
+.energy-bar {
+  width: 100%;
+  height: 30px;
+  background-color: rgba(255, 152, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  position: relative;
+}
+
+.energy-bar::after {
+  content: "";
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  width: 0%;
+  transition: width 0.1s ease-out;
+  border-radius: 3px;
+}
+
+.energy-bar.beat-detected {
+  animation: energy-pulse 0.3s ease-out;
+}
+
+@keyframes energy-pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255, 152, 0, 0);
+  }
+}
+
+.energy-label {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.85em;
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.mic-input-section .setting-group select[id="frequencyRange"] {
+  width: 100%;
+}
+
+#micSensitivity {
+  width: 100%;
+  accent-color: #ff9800;
+  cursor: pointer;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .sync-container {

@@ -22,6 +22,19 @@ let selectedTail = null;
 let lastEffectTriggerTime = 0;
 const MIN_EFFECT_INTERVAL = 200; // ms
 
+// ===== MICROPHONE INPUT STATE =====
+let micStream = null;
+let audioContext = null;
+let analyser = null;
+let micEnabled = false;
+let micSensitivity = 0.5;
+let frequencyRange = "bass";
+let lastMicBeatTime = 0;
+const MIC_BEAT_COOLDOWN = 200; // ms
+let previousEnergy = 0;
+let energySmoothingFactor = 0.3;
+let micAnimationId = null;
+
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", function () {
   setupEventListeners();
@@ -121,6 +134,196 @@ function setupEventListeners() {
         "success",
       );
     });
+
+  // Microphone input
+  document
+    .getElementById("micToggleBtn")
+    .addEventListener("click", function () {
+      if (micEnabled) {
+        disableMicrophone();
+      } else {
+        enableMicrophone();
+      }
+    });
+
+  document
+    .getElementById("micSensitivity")
+    .addEventListener("input", function () {
+      micSensitivity = parseFloat(this.value);
+    });
+
+  document
+    .getElementById("frequencyRange")
+    .addEventListener("change", function () {
+      frequencyRange = this.value;
+    });
+}
+
+// ===== MICROPHONE INPUT LOGIC =====
+async function enableMicrophone() {
+  try {
+    if (!audioContext) {
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) {
+        throw new Error("Web Audio API is not supported in this browser");
+      }
+      audioContext = new AudioContextCtor();
+    }
+
+    if (audioContext.state === "suspended") {
+      await audioContext.resume();
+    }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error("getUserMedia is not available in this browser");
+    }
+
+    // Request microphone access
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+      },
+    });
+
+    const createStreamSource =
+      typeof audioContext.createMediaStreamSource === "function"
+        ? audioContext.createMediaStreamSource.bind(audioContext)
+        : typeof audioContext.createMediaStreamAudioSource === "function"
+          ? audioContext.createMediaStreamAudioSource.bind(audioContext)
+          : null;
+
+    if (!createStreamSource) {
+      throw new Error(
+        "This browser audio context cannot create a microphone stream source",
+      );
+    }
+
+    const source = createStreamSource(micStream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.8;
+
+    source.connect(analyser);
+
+    micEnabled = true;
+    document.getElementById("micToggleBtn").textContent = "Disable Mic";
+    document.getElementById("micStatus").textContent = "Active";
+    document.getElementById("micStatus").classList.add("mic-on");
+
+    showNotification("Microphone enabled", "success");
+
+    // Start beat detection loop
+    analyzeMicrophoneInput();
+  } catch (err) {
+    console.error("Microphone access error:", err);
+    const details = err && err.message ? `: ${err.message}` : "";
+    showNotification(`Failed to access microphone${details}`, "error");
+    micEnabled = false;
+  }
+}
+
+function disableMicrophone() {
+  micEnabled = false;
+
+  if (micStream) {
+    micStream.getTracks().forEach((track) => track.stop());
+    micStream = null;
+  }
+
+  if (micAnimationId) {
+    cancelAnimationFrame(micAnimationId);
+    micAnimationId = null;
+  }
+
+  document.getElementById("micToggleBtn").textContent = "Enable Mic";
+  document.getElementById("micStatus").textContent = "Off";
+  document.getElementById("micStatus").classList.remove("mic-on");
+
+  // Reset energy bar
+  document.getElementById("energyBar").style.width = "0%";
+  document.getElementById("energyLabel").textContent = "Energy: 0%";
+
+  showNotification("Microphone disabled", "success");
+}
+
+function analyzeMicrophoneInput() {
+  if (!micEnabled || !analyser) return;
+
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(dataArray);
+
+  // Calculate energy based on frequency range
+  let energy = 0;
+  let rangeStart = 0;
+  let rangeEnd = dataArray.length;
+
+  if (frequencyRange === "bass") {
+    // 0-250 Hz (kick drums)
+    rangeEnd = Math.floor(dataArray.length * 0.15);
+  } else if (frequencyRange === "mid") {
+    // 250-4000 Hz (drums, vocals)
+    rangeStart = Math.floor(dataArray.length * 0.15);
+    rangeEnd = Math.floor(dataArray.length * 0.6);
+  } else if (frequencyRange === "treble") {
+    // 4000+ Hz (cymbals, hi-hats)
+    rangeStart = Math.floor(dataArray.length * 0.6);
+  }
+
+  // Sum energy in frequency range
+  for (let i = rangeStart; i < rangeEnd; i++) {
+    energy += dataArray[i];
+  }
+
+  // Average energy
+  const sampleCount = rangeEnd - rangeStart;
+  energy = energy / sampleCount / 255; // Normalize to 0-1
+
+  // Compute energy delta before smoothing update.
+  const energyChange = energy - previousEnergy;
+
+  // Apply exponential smoothing
+  const smoothedEnergy =
+    previousEnergy * (1 - energySmoothingFactor) +
+    energy * energySmoothingFactor;
+  previousEnergy = smoothedEnergy;
+
+  // Update energy visualization
+  const energyPercent = Math.round(smoothedEnergy * 100);
+  updateEnergyVisualization(energyPercent);
+
+  // Detect beat onset (rapid energy increase)
+  const energyThreshold = 0.4 * (1 - micSensitivity + 0.1); // Adjust by sensitivity
+
+  if (smoothedEnergy > energyThreshold && energyChange > 0.05) {
+    const now = Date.now();
+    if (now - lastMicBeatTime > MIC_BEAT_COOLDOWN) {
+      handleMicrophoneBeat();
+      lastMicBeatTime = now;
+    }
+  }
+
+  micAnimationId = requestAnimationFrame(analyzeMicrophoneInput);
+}
+
+function updateEnergyVisualization(percentEnergy) {
+  const energyBar = document.getElementById("energyBar");
+  energyBar.style.width = percentEnergy + "%";
+  document.getElementById("energyLabel").textContent =
+    `Energy: ${percentEnergy}%`;
+}
+
+function handleMicrophoneBeat() {
+  // Feed microphone beat into the tap tempo system
+  handleTap();
+  animateTapButton();
+
+  // Pulse energy bar
+  const energyBar = document.getElementById("energyBar");
+  energyBar.classList.remove("beat-detected");
+  void energyBar.offsetWidth; // Trigger reflow
+  energyBar.classList.add("beat-detected");
 }
 
 // ===== TAP TEMPO LOGIC =====
@@ -398,6 +601,10 @@ async function disconnectSerial() {
 
   if (currentMode === "armed") {
     disarmSync();
+  }
+
+  if (micEnabled) {
+    disableMicrophone();
   }
 
   if (port) {
