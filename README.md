@@ -3,6 +3,8 @@
 This fork includes a browser-based DJ keyboard UI for triggering PixMob effects from your computer keyboard.
 Try it here: [DJ UI](https://dominikhoebert.github.io/pixmob-ir-reverse-engineering/dj.html).
 
+![dj keyboard](media/dj-keyboard.jpg)
+
 # What's new in this fork?
 
 For those people who are only seeking an easy way to give a second life to their PixMob wristband, I added a simple webpage that allow them to connect an Arduino compatible board with an infrared transmitter to try out the different effects already found by the original project.
