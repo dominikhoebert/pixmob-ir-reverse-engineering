@@ -1,12 +1,21 @@
+## DJ UI Quick Try
+
+This fork includes a browser-based DJ keyboard UI for triggering PixMob effects from your computer keyboard.
+Try it here: [DJ UI](https://dominikhoebert.github.io/pixmob-ir-reverse-engineering/dj.html).
+
 # What's new in this fork?
 
-For those people who are only seeking an easy way to give a second life to their PixMob wristband, I added a simple webpage that allow them to connect an Arduino compatible board with an infrared transmitter to try out the different effects already found by the original project. 
+For those people who are only seeking an easy way to give a second life to their PixMob wristband, I added a simple webpage that allow them to connect an Arduino compatible board with an infrared transmitter to try out the different effects already found by the original project.
 
 Test it online at: ([here](https://ivanr3d.com/tools/led-wristband/)).
+
+Try it here: [DJ UI](https://dominikhoebert.github.io/pixmob-ir-reverse-engineering/dj.html).
 
 ([![Webpage screenshot](media/webpage.png)](https://ivanr3d.com/tools/led-wristband/))
 
 The source code for this webpage is available in the folder /www.
+
+Web UI setup guide: [www/README.md](www/README.md).
 
 # PixMob IR (and RF!) Reverse Engineering Project
 
@@ -14,9 +23,9 @@ Hacking the PixMob infrared (and now RF!) protocol to enable control of PixMob w
 
 **Most of this writeup pertains for the IR-controlled bracelets, but some new content has been added in the &quot;rf&quot; folder regarding the RF bracelets, including some functional signal recordings.**
 
-***Join the PIXMOD Discord server! https://discord.gg/UYqTjC7xp3***
+**_Join the PIXMOD Discord server! https://discord.gg/UYqTjC7xp3_**
 
-***A huge thanks to Zach Resmer ([@zacharesmer](https://github.com/zacharesmer)) and Sean Yem ([@sean1983](https://github.com/sean1983)) for their help in figuring out the packet structure of the IR transmissions; Steve and Remco from Reddit for making some initial in-the-wild IR signal Flipper recordings; and Dan ([@hckrdan](https://github.com/hckrdan)) for some crafty raw recordings done with a signal analyzer.***
+**_A huge thanks to Zach Resmer ([@zacharesmer](https://github.com/zacharesmer)) and Sean Yem ([@sean1983](https://github.com/sean1983)) for their help in figuring out the packet structure of the IR transmissions; Steve and Remco from Reddit for making some initial in-the-wild IR signal Flipper recordings; and Dan ([@hckrdan](https://github.com/hckrdan)) for some crafty raw recordings done with a signal analyzer._**
 
 ### Skip down to &quot;[Instructions](https://github.com/danielweidman/pixmob-ir-reverse-engineering#instructions)&quot; if you are not interested in the full write-up and just want to light up your bracelet(s)!
 
@@ -26,7 +35,7 @@ https://user-images.githubusercontent.com/44669548/182740123-8e16b0af-327b-44b2-
 
 PixMob bracelets are LED wristbands distributed to every member of the audience at large events which all light up in sync to create massive, distributed light shows. The wristbands react to infrared commands from various types of fixed and moving transmitters. The wristbands have been used by various sports teams (including during the Super Bowl) and touring bands such as Coldplay, Shawn Mendes, Taylor Swift, Bad Bunny, The Weeknd, and Lady Gaga, to produce light shows that take advantage of the line-of-sight nature of IR light/&quot;signals&quot; to make light effects that vary by physical location in an event venue. After the event, bracelets are sometimes collected for reuse/recycling, but often attendees are left to take home the inactive bracelets.
 
-Some prior work has been done to &quot;reactivate&quot; the PixMob bracelets after the conclusion of the event they were used in, to limited levels of success. Certain old models of PixMob bracelets can be put into a permanent motion-sensitive mode by soldering or unsoldering a pad on the PCB, but this doesn&#39;t allow the bracelet to be controlled in sync with other bracelets wirelessly. [Another project](https://jg.sn.sg/ndp-pixmob-1/) was able to upload custom firmware onto a PixMob bracelet board, but this requires taking apart the bracelet and having specialized equipment, and no IR-controlled lighting custom firmware has been released. One person has posted a [video](https://www.youtube.com/watch?v=N1cR-x\_0YAw) online wherein they demonstrate being able to turn their bracelet a couple different colors by pressing buttons on a TV remote (coincidentally generating &quot;valid&quot; codes), but the make and model of the TV remote were not specified and (as far as I&#39;m aware) no reports of reproduction have been made.
+Some prior work has been done to &quot;reactivate&quot; the PixMob bracelets after the conclusion of the event they were used in, to limited levels of success. Certain old models of PixMob bracelets can be put into a permanent motion-sensitive mode by soldering or unsoldering a pad on the PCB, but this doesn&#39;t allow the bracelet to be controlled in sync with other bracelets wirelessly. [Another project](https://jg.sn.sg/ndp-pixmob-1/) was able to upload custom firmware onto a PixMob bracelet board, but this requires taking apart the bracelet and having specialized equipment, and no IR-controlled lighting custom firmware has been released. One person has posted a [video](https://www.youtube.com/watch?v=N1cR-x_0YAw) online wherein they demonstrate being able to turn their bracelet a couple different colors by pressing buttons on a TV remote (coincidentally generating &quot;valid&quot; codes), but the make and model of the TV remote were not specified and (as far as I&#39;m aware) no reports of reproduction have been made.
 
 This project set out to actually reverse-engineer the production PixMob bracelet IR protocol so that PixMob devices can be controlled via IR at home, just as they are during an event.
 
@@ -50,7 +59,7 @@ The raw IR signal files recorded by the Flipper were inspected and analyzed. It 
 
 Through trial and error, it was determined that the signal recording actually contained multiple &quot;copies&quot; of the white flash signal, and the recording can be cropped down significantly and still produce the same effect. The minimum necessary segment of the recording required to elicit the white flash bracelet effect spans the samples between each of the ~6300 dots on the graph above.
 
-From plots like this, we noticed that the transition intervals cluster around multiples of 700 microseconds. With this knowledge, we translated the signals into a binary representation, with each bit representing a 700 microsecond time interval. *Update: based on the patent US-10863607-B2 ([PDF link](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10863607)) we determined this value is probably actually 694.44 microseconds.*
+From plots like this, we noticed that the transition intervals cluster around multiples of 700 microseconds. With this knowledge, we translated the signals into a binary representation, with each bit representing a 700 microsecond time interval. _Update: based on the patent US-10863607-B2 ([PDF link](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10863607)) we determined this value is probably actually 694.44 microseconds._
 
 ![Examples of recorded packets](media/fig_1_packet_examples.png)
 
@@ -89,21 +98,25 @@ In reviewing the brute force results, we discovered that some of the light effec
 - We&#39;ve only been able to reliably discover codes that produce an immediate effect to bracelets. We know that there are many more complicated ways these bracelets are used in the wild that involves transmitting programming/light choreography information before a long light effect and then triggering those effects to run in some way.
 
 **Next steps:**
+
 - Learn more about the IR packet structure.
 - Make the documentation more complete.
 - Write a standalone Arduino library for controlling the bracelets without a computer.
 - Write an installable Python library for controlling the bracelets directly on a device that runs Python code with GPIO pins (e.g. Raspberry Pi).
 - Further streamline the brute force process.
   - Point a camera at the bracelets and automatically record signals that lead to effects?
-  
+
 **References and links:**
+
 - PixMob Wash transmitter FCC filing: [https://fccid.io/2ADS4WASH](https://fccid.io/2ADS4WASH)
 - Another project that tried to brute force PixMob IR signals but was not successful: [https://github.com/yeokm1/reverse-engineering-ndp2016-wristband](https://github.com/yeokm1/reverse-engineering-ndp2016-wristband). Presumably this is because the author did not have any initial valid signals to work off of, so they could not make any inferences about packet structure or on/off timing information.
 - A project reverse engineering the less-common Bluetooth Low-Energy based PixMob bracelets: [https://github.com/MustBeArt/PIXMOB-reversing](https://github.com/MustBeArt/PIXMOB-reversing)
 - Another project that does the equivalent of this one, but for Xylobands, a different brand of LED bracelet that uses RF instead of IR: [https://github.com/StefanKrupop/XyloShield](https://github.com/StefanKrupop/XyloShield)
 
 ### Updates (as of 12/16/2022)
+
 There has been a lot of really good activity and progress in this repo since I first posted it! I am so appreciative of all the help from community members here.
+
 - /u/remco has contributed some more raw recordings from a Flipper at a Coldplay concert (now we've got two sets of Coldplay recordings)
 - [@hckrdan](https://github.com/hckrdan) made some recordings using a signal analyzer with a Raspberry Pi and IR receiver at an Imagine Dragons show
 - I recorded some signals from the Cleveland Cavaliers 2022 season home opener
@@ -114,14 +127,14 @@ There has been a lot of really good activity and progress in this repo since I f
 - AND, last but not least, [@sean1983](https://github.com/sean1983) has made [tons of progress](https://github.com/danielweidman/pixmob-ir-reverse-engineering/issues/8) discovering many more codes, assigning RGB values, investigating packet structure, and more!
 
 ### More Updates! (as of 2/20/2023)
+
 - [@sean1983](https://github.com/sean1983) has continued to make [tons of progress](https://github.com/danielweidman/pixmob-ir-reverse-engineering/issues/8) looking at the protocol, and made a much more streamlined brute force process to discover **500+ color commands**!
 - [@NTLS09](https://github.com/NTLS09) put together a pretty comprehensive IR Plus file that can be used with smartphones and other devices.
 - [@sean1983](https://github.com/sean1983) has dumped the contents of an EEPROM component (https://github.com/danielweidman/pixmob-ir-reverse-engineering/issues/16)
 
-
 ## Instructions
 
-***If you have a Flipper Zero device and you would just like to transmit some pre-defined signals without a computer or Arduino, see this repository instead: [https://github.com/danielweidman/flipper-pixmob-ir-codes](https://github.com/danielweidman/flipper-pixmob-ir-codes).***
+**_If you have a Flipper Zero device and you would just like to transmit some pre-defined signals without a computer or Arduino, see this repository instead: [https://github.com/danielweidman/flipper-pixmob-ir-codes](https://github.com/danielweidman/flipper-pixmob-ir-codes)._**
 
 **Code and structure:**
 
@@ -136,9 +149,10 @@ You will need:
 2. A 940nm IR emitter for the Arduino. You could set up a raw IR led or use a board like the transmitter piece of [this](https://www.amazon.com/Digital-Receiver-Transmitter-Arduino-Compatible/dp/B01E20VQD8/).
 
 Basically, the steps are:
+
 1. Connect an IR LED/transmitter to the Arduino board.
 2. Connect the Arduino to a computer by USB.
-3. Upload the sketch from &quot;arduino\_sender&quot; to the Arduino. You may need to install the IRremote or IRremoteESP8266 library first. Make sure to set the IR tranmitter data pin variable and note down the port/device address (COM port on Windows, /dev/\<something\> on Linux and macOS) of the Arduino.
+3. Upload the sketch from &quot;arduino_sender&quot; to the Arduino. You may need to install the IRremote or IRremoteESP8266 library first. Make sure to set the IR tranmitter data pin variable and note down the port/device address (COM port on Windows, /dev/\<something\> on Linux and macOS) of the Arduino.
 4. Set the `ARDUINO_SERIAL_PORT` in "python_tools/config.py". If using a lower-power Arduino device like an Arduino Nano, also set `WAIT_BEFORE_SEND` to True.
 5. Run the demo script. Your PixMob device(s) should light up!
    Use demo_single_effect.py, demo_multiple_effects.py, or demo_multiple_effects_advanced.py. Instructions are provided in each file.
@@ -154,4 +168,5 @@ You will, of course, need non-empty batteries in your PixMob bracelet/other devi
 - Other bracelets may unfortunately need to pried open and potentially taped back together.
 
 ## Contributing
+
 Feel free to open an issue or pull request if you have any improvements to make or if you are able to glean anything new and action-worthy about the IR packet structure. I'm also happy to answer any questions about how to get things up and running.

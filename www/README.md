@@ -2,6 +2,8 @@
 
 A web-based interface for controlling PixMob IR wristbands using an Arduino/ESP32 with an IR transmitter.
 
+Try it here: [DJ UI](https://dominikhoebert.github.io/pixmob-ir-reverse-engineering/dj.html).
+
 ## Features
 
 - **Original UI** (`index.html`) - Traditional dropdown-based interface for selecting and sending effects
