@@ -34,6 +34,23 @@ Simply open `index.html` in a modern web browser (Chrome, Edge, Firefox).
 
 Test it online at: https://ivanr3d.com/tools/led-wristband/
 
+### Option 4: Host on GitHub Pages
+
+This repository includes a GitHub Actions workflow at `../.github/workflows/pages.yml` that deploys this `www` folder to GitHub Pages.
+
+1. Push your changes to GitHub (branch: `main` or `master`).
+2. In your GitHub repo, go to **Settings → Pages**.
+3. Set **Source** to **GitHub Actions**.
+4. Wait for the "Deploy www to GitHub Pages" workflow run to finish.
+5. Open your site at: `https://<your-username>.github.io/<your-repo>/`
+
+Direct pages in this project:
+
+- Main UI: `https://<your-username>.github.io/<your-repo>/index.html`
+- DJ UI: `https://<your-username>.github.io/<your-repo>/dj.html`
+
+**Note:** Web Serial API features require a supported Chromium browser (Chrome/Edge/Opera).
+
 ## Hardware Requirements
 
 1. **Arduino-compatible microcontroller** (Arduino Uno, Mega, ESP32, etc.)
