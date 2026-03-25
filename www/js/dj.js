@@ -7,10 +7,11 @@ let isConnected = false;
 let keyMappings = {};
 let currentMode = "trigger"; // 'trigger' or 'map'
 let selectedKeyForMapping = null;
+const MAPPINGS_STORAGE_KEY = "pixmob_dj_mappings";
 
 // Initialize on page load
-document.addEventListener("DOMContentLoaded", function () {
-  loadMappings();
+document.addEventListener("DOMContentLoaded", async function () {
+  await loadMappings();
   setupEventListeners();
   populateEffectDropdown();
   updateKeyLabels();
@@ -310,20 +311,45 @@ function populateEffectDropdown() {
 
 // Save mappings to localStorage
 function saveMappings() {
-  localStorage.setItem("pixmob_dj_mappings", JSON.stringify(keyMappings));
+  localStorage.setItem(MAPPINGS_STORAGE_KEY, JSON.stringify(keyMappings));
 }
 
 // Load mappings from localStorage
-function loadMappings() {
-  const saved = localStorage.getItem("pixmob_dj_mappings");
-  if (saved) {
+async function loadMappings() {
+  const saved = localStorage.getItem(MAPPINGS_STORAGE_KEY);
+
+  if (saved !== null) {
     try {
       keyMappings = JSON.parse(saved);
+      return;
     } catch (e) {
       console.error("Failed to load mappings:", e);
       keyMappings = {};
+      return;
     }
   }
+
+  // First visit in this browser: seed mappings from bundled example file.
+  try {
+    const response = await fetch("example-mappings.json", {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch example mappings: ${response.status}`);
+    }
+
+    const defaults = await response.json();
+    if (defaults && typeof defaults === "object") {
+      keyMappings = defaults;
+      saveMappings();
+      showNotification("Loaded default key mappings", "success");
+      return;
+    }
+  } catch (e) {
+    console.error("Failed to load default mappings:", e);
+  }
+
+  keyMappings = {};
 }
 
 // Export mappings as JSON file
