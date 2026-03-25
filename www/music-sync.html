@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixMob Music Sync</title>
+    <link rel="stylesheet" href="css/music-sync-style.css" />
+  </head>
+  <body>
+    <div id="notification" class="notification"></div>
+
+    <div class="header">
+      <h1>🎵 PixMob Music Sync</h1>
+      <div class="header-controls">
+        <button type="button" id="connectBtn" class="btn btn-connect">
+          Connect to board
+        </button>
+        <a href="dj.html" class="btn btn-secondary">DJ Keyboard</a>
+        <a href="index.html" class="btn btn-secondary">Original UI</a>
+      </div>
+    </div>
+
+    <div class="sync-container">
+      <div class="tempo-panel">
+        <h2>Tempo Control</h2>
+
+        <div class="tempo-display">
+          <div class="bpm-input-group">
+            <label for="bpmInput">BPM:</label>
+            <input
+              type="number"
+              id="bpmInput"
+              min="40"
+              max="240"
+              value="120"
+              step="1"
+            />
+          </div>
+          <div class="tap-info">
+            <span id="tapCount">0 taps</span>
+            <button id="resetTapBtn" class="btn btn-small">Reset</button>
+          </div>
+        </div>
+
+        <button id="tapButton" class="btn btn-tap">
+          <span class="tap-text">TAP</span>
+          <span class="tap-subtitle">to beat</span>
+        </button>
+
+        <div class="status-indicator">
+          <div id="syncStatus" class="status-dot waiting"></div>
+          <span id="statusText">Waiting for taps...</span>
+        </div>
+      </div>
+
+      <div class="settings-panel">
+        <h2>Settings</h2>
+
+        <div class="setting-group">
+          <label for="quantizeSelect">Quantize to:</label>
+          <select id="quantizeSelect">
+            <option value="1">1/4 (every beat)</option>
+            <option value="2">1/8</option>
+            <option value="4">1/16</option>
+            <option value="0.5">1/2 (half bar)</option>
+            <option value="0.25">Full bar</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label for="effectSelect">Effect:</label>
+          <select id="effectSelect"></select>
+        </div>
+
+        <div class="setting-group">
+          <label for="tailSelect">Tail Code:</label>
+          <select id="tailSelect">
+            <option value="">None</option>
+            <option value="FADE_1">FADE_1</option>
+            <option value="FADE_2">FADE_2</option>
+            <option value="FADE_3">FADE_3</option>
+            <option value="FADE_4">FADE_4</option>
+            <option value="FADE_5">FADE_5</option>
+            <option value="FADE_6">FADE_6</option>
+            <option value="SHARP_PROBABILISTIC_1">SHARP_PROBABILISTIC_1</option>
+            <option value="SHARP_PROBABILISTIC_2">SHARP_PROBABILISTIC_2</option>
+            <option value="SHARP_PROBABILISTIC_3">SHARP_PROBABILISTIC_3</option>
+            <option value="SHARP_PROBABILISTIC_4">SHARP_PROBABILISTIC_4</option>
+            <option value="FADE_PROBABILISTIC_1">FADE_PROBABILISTIC_1</option>
+            <option value="FADE_PROBABILISTIC_2">FADE_PROBABILISTIC_2</option>
+            <option value="FADE_PROBABILISTIC_3">FADE_PROBABILISTIC_3</option>
+            <option value="FADE_PROBABILISTIC_4">FADE_PROBABILISTIC_4</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label for="preFireMs">Pre-fire (ms):</label>
+          <input
+            type="number"
+            id="preFireMs"
+            min="0"
+            max="200"
+            value="50"
+            step="10"
+          />
+          <span class="help-text">Fire effect before beat lands</span>
+        </div>
+      </div>
+
+      <div class="beat-grid-panel">
+        <h2>Beat Grid</h2>
+        <div id="beatGrid" class="beat-grid">
+          <!-- Beat positions will be generated here -->
+        </div>
+        <div class="grid-info">
+          <span id="gridInfo">Beats per bar: 4</span>
+        </div>
+      </div>
+
+      <div class="controls-panel">
+        <button id="armSyncBtn" class="btn btn-primary">Arm Sync</button>
+        <button id="testEffectBtn" class="btn btn-secondary">
+          Test Effect
+        </button>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <h3>How to use:</h3>
+      <ol>
+        <li><strong>Connect:</strong> Click "Connect to board"</li>
+        <li>
+          <strong>Set Tempo:</strong> Either enter BPM manually or tap the
+          button to the beat
+        </li>
+        <li>
+          <strong>Pick Effect:</strong> Select an effect and optional tail code
+        </li>
+        <li>
+          <strong>Quantize:</strong> Choose grid alignment (1/4, 1/8, etc.)
+        </li>
+        <li>
+          <strong>Arm Sync:</strong> Click "Arm Sync" to enable audio-to-beat
+          triggering
+        </li>
+        <li>
+          <strong>Play Music:</strong> Effects will trigger automatically on
+          beat grid
+        </li>
+      </ol>
+    </div>
+
+    <script src="js/effects_definitions.js"></script>
+    <script src="js/music-sync.js"></script>
+  </body>
+</html>
